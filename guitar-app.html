@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Acoustic Guitar Finder App</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: linear-gradient(180deg, #f5efe6, #e7d4bc);
+      color: #1d1d1d;
+    }
+    .app-shell {
+      max-width: 900px;
+      margin: 40px auto;
+      background: #fffaf4;
+      border-radius: 16px;
+      box-shadow: 0 12px 30px rgba(0,0,0,0.12);
+      padding: 30px;
+    }
+    h1, h2 {
+      color: #6b3f1f;
+    }
+    .controls {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      margin: 24px 0;
+    }
+    .control-card {
+      background: #f2e4d4;
+      border-radius: 12px;
+      padding: 16px;
+    }
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: bold;
+    }
+    select, button {
+      width: 100%;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #b9926a;
+      font-size: 1rem;
+    }
+    button {
+      background: #bf7d3b;
+      color: white;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+    button:hover {
+      background: #9d642d;
+    }
+    .result {
+      margin-top: 24px;
+      padding: 20px;
+      border-radius: 12px;
+      background: #fff1df;
+      border-left: 8px solid #9d642d;
+      min-height: 120px;
+    }
+    .back-link {
+      display: inline-block;
+      margin-top: 18px;
+      color: #6b3f1f;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    .score-list {
+      margin-top: 12px;
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <h1>Acoustic Guitar Finder</h1>
+    <p>This small AI-assisted app recommends a guitar style based on what kind of sound and playing experience a user wants.</p>
+
+    <div class="controls">
+      <div class="control-card">
+        <label for="style">Playing style</label>
+        <select id="style">
+          <option value="strumming">Mostly strumming</option>
+          <option value="fingerstyle">Mostly fingerstyle</option>
+          <option value="mixed">A mix of both</option>
+        </select>
+      </div>
+
+      <div class="control-card">
+        <label for="tone">Tone preference</label>
+        <select id="tone">
+          <option value="warm">Warm and mellow</option>
+          <option value="bright">Bright and clear</option>
+          <option value="balanced">Balanced</option>
+        </select>
+      </div>
+
+      <div class="control-card">
+        <label for="budget">Budget</label>
+        <select id="budget">
+          <option value="low">Under $400</option>
+          <option value="mid">$400 to $900</option>
+          <option value="high">Above $900</option>
+        </select>
+      </div>
+    </div>
+
+    <button onclick="recommendGuitar()">Find My Guitar Match</button>
+
+    <div class="result" id="resultBox">
+      Pick your preferences and click the button to get a recommendation.
+    </div>
+
+    <a class="back-link" href="scratch.html">← Back to the Acoustic Guitars scratch page</a>
+  </div>
+
+  <script>
+    function recommendGuitar() {
+      const style = document.getElementById('style').value;
+      const tone = document.getElementById('tone').value;
+      const budget = document.getElementById('budget').value;
+
+      const guitars = [
+        {
+          name: 'Dreadnought',
+          bestFor: 'Big strumming sound and strong projection',
+          score: 0,
+          tips: 'Great for rhythm playing, singer-songwriter styles, and fuller volume.'
+        },
+        {
+          name: 'Concert / Parlor',
+          bestFor: 'Comfort and articulate fingerstyle playing',
+          score: 0,
+          tips: 'A smaller body can feel easier to hold and often responds well to lighter touch.'
+        },
+        {
+          name: 'Grand Auditorium',
+          bestFor: 'Versatility across strumming and fingerpicking',
+          score: 0,
+          tips: 'A strong all-around choice when you want balance, comfort, and flexible tone.'
+        }
+      ];
+
+      if (style === 'strumming') guitars[0].score += 3;
+      if (style === 'fingerstyle') guitars[1].score += 3;
+      if (style === 'mixed') guitars[2].score += 3;
+
+      if (tone === 'warm') {
+        guitars[1].score += 2;
+        guitars[2].score += 1;
+      }
+      if (tone === 'bright') {
+        guitars[0].score += 1;
+        guitars[2].score += 2;
+      }
+      if (tone === 'balanced') guitars[2].score += 3;
+
+      if (budget === 'low') guitars[0].score += 1;
+      if (budget === 'mid') guitars[2].score += 2;
+      if (budget === 'high') {
+        guitars[1].score += 1;
+        guitars[2].score += 2;
+      }
+
+      guitars.sort((a, b) => b.score - a.score);
+      const top = guitars[0];
+
+      document.getElementById('resultBox').innerHTML = `
+        <h2>Your best match: ${top.name}</h2>
+        <p><strong>Why it fits:</strong> ${top.bestFor}</p>
+        <p>${top.tips}</p>
+        <div class="score-list">
+          <strong>Match scores:</strong>
+          <ul>
+            ${guitars.map(g => `<li>${g.name}: ${g.score} points</li>`).join('')}
+          </ul>
+        </div>
+      `;
+    }
+  </script>
+</body>
+</html>
